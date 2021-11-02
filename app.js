@@ -7,12 +7,20 @@ block6 = document.querySelector(".gameBlock6")
 block7 = document.querySelector(".gameBlock7")
 block8 = document.querySelector(".gameBlock8")
 block9 = document.querySelector(".gameBlock9")
+gameContainer = document.querySelector(".gameBoard")
+playerTurnX = document.querySelector(".playerTurnX")
+playerTurnO = document.querySelector(".playerTurnODull")
+winnerScreenX = document.querySelector(".winnerScreenX")
+winnerScreenO = document.querySelector(".winnerScreenO")
 
-const gameBoard = (function (getPos, storeValue){
 
-const positionsFunctions = function (){
+const gameBoard = (function (){     
 
-    const positions = {
+    let winCheck = false;
+    let gameBoardFill = 0
+
+    //private object
+    const _positions = {
         position1: "position1",
         position2: "position2",
         position3: "position3",
@@ -23,19 +31,100 @@ const positionsFunctions = function (){
         position8: "position8",
         position9: "position9",
     }
-}
-    
 
-    for (let key in positions){
-        if(positions[key] === getPos){
-            positions[key] = storeValue
-            console.log("ayo")
+    //storing positions in object 
+const storeValue = (getPos, storeValue) =>{
+    for (let key in _positions){
+        if(_positions[key] === getPos){
+            _positions[key] = storeValue
+            gameBoardFill++
+        }
+    }
+}
+
+    const threeInRowCheckX = () =>{
+        if(_positions.position1 === "X" && _positions.position2 === "X" && _positions.position3 === "X"){
+            winnerScreenX.style.display = "block";
+            winCheck = true;
+            endProgram();
+        }else if (_positions.position1 === "X" && _positions.position5 === "X" && _positions.position9 === "X"){
+            winnerScreenX.style.display = "block"
+            winCheck = true;
+        }else if(_positions.position1 === "X" && _positions.position4 === "X" && _positions.position7 === "X"){
+            winnerScreenX.style.display = "block"
+            winCheck = true;
+        }else if(_positions.position2 === "X" && _positions.position5 === "X" && _positions.position8 === "X"){
+            winnerScreenX.style.display = "block"
+            winCheck = true;
+        }else if(_positions.position4 === "X" && _positions.position5 === "X" && _positions.position6 === "X"){
+            winnerScreenX.style.display = "block"
+            winCheck = true;
+        }else if(_positions.position3 === "X" && _positions.position5 === "X" && _positions.position7 === "X"){
+            winnerScreenX.style.display = "block"
+            winCheck = true;
+        }else if(_positions.position3 === "X" && _positions.position6 === "X" && _positions.position9 === "X"){
+            winnerScreenX.style.display = "block"
+            winCheck = true;
+        }else if(_positions.position7 === "X" && _positions.position8 === "X" && _positions.position9 === "X"){
+            winnerScreenX.style.display = "block"
+            winCheck = true;
         }
     }
 
-    return positions
+    const ThreeInRowCheckY = () =>{
+        if(_positions.position1 === "O" && _positions.position2 === "O" && _positions.position3 === "O"){
+            winnerScreenO.style.display = "block";
+            winCheck = true;
+        }else if (_positions.position1 === "O" && _positions.position5 === "O" && _positions.position9 === "O"){
+            winnerScreenO.style.display = "block";
+            winCheck = true;
+        }else if(_positions.position1 === "O" && _positions.position4 === "O" && _positions.position7 === "O"){
+            winnerScreenO.style.display = "block";
+            winCheck = true;
+        }else if(_positions.position2 === "O" && _positions.position5 === "O" && _positions.position8 === "O"){
+            winnerScreenO.style.display = "block";
+            winCheck = true;
+        }else if(_positions.position4 === "O" && _positions.position5 === "O" && _positions.position6 === "O"){
+            winnerScreenO.style.display = "block";
+            winCheck = true;
+        }else if(_positions.position3 === "O" && _positions.position5 === "O" && _positions.position7 === "O"){
+            winnerScreenO.style.display = "block";
+            winCheck = true;
+        }else if(_positions.position3 === "O" && _positions.position6 === "O" && _positions.position9 === "O"){
+            winnerScreenO.style.display = "block";
+            winCheck = true;
+        }else if(_positions.position7 === "O" && _positions.position8 === "O" && _positions.position9 === "O"){
+            winnerScreenO.style.display = "block";
+            winCheck = true;
+        }
+    }
 
-})
+    const tieCheck = () => {
+        if(gameBoardFill === 9 && winCheck === false){
+            console.log('Tie')
+        }
+    }
+
+    const endProgram = () => {
+    
+        document.addEventListener("click", handler, true);
+    
+        function handler(e) {
+          e.stopPropagation();
+          e.preventDefault();
+        }
+
+
+    }
+    
+    return {
+        storeValue,
+        threeInRowCheckX,
+        ThreeInRowCheckY,
+        tieCheck
+    }
+
+})()
 
 const XO = (function (){
    
@@ -46,9 +135,13 @@ const XO = (function (){
             letter = "";
     
         if(num == 0){
-                letter = "X"
+                 letter = "X"
+                 playerTurnX.className = "playerTurnXDull"
+                 playerTurnO.className = "playerTurnO"            
         }else{
                 letter = "O"
+                playerTurnO.className = "playerTurnODull"
+                playerTurnX.className = "playerTurnX" 
         }      
         num++
         return letter;
@@ -60,13 +153,17 @@ const XO = (function (){
 
 
 
+
 block1.addEventListener("click", ()=> {
     if(block1.childElementCount === 0){
     XO.printXO();
     text = document.createElement("p")
     text.textContent = letter;
     block1.appendChild(text)
-    console.log (gameBoard('position1', letter))
+    gameBoard.storeValue("position1", letter)
+    gameBoard.threeInRowCheckX();
+    gameBoard.ThreeInRowCheckY();
+    gameBoard.tieCheck();
     }
 })
 
@@ -76,7 +173,10 @@ block2.addEventListener("click", ()=> {
     text = document.createElement("p")
     text.textContent = letter;
     block2.appendChild(text)
-    gameBoard('position2', letter)
+    gameBoard.storeValue("position2", letter)
+    gameBoard.threeInRowCheckX();
+    gameBoard.ThreeInRowCheckY();
+    gameBoard.tieCheck();
     }
 })
 
@@ -86,7 +186,10 @@ block3.addEventListener("click", ()=> {
         text = document.createElement("p")
         text.textContent = letter;
         block3.appendChild(text)
-        console.log (gameBoard('position3', letter))
+        gameBoard.storeValue("position3", letter)
+        gameBoard.threeInRowCheckX();
+        gameBoard.ThreeInRowCheckY();
+        gameBoard.tieCheck();
     }
 })
 
@@ -96,7 +199,10 @@ block4.addEventListener("click", ()=> {
         text = document.createElement("p")
         text.textContent = letter;
         block4.appendChild(text) 
-        gameBoard('position4', letter)
+        gameBoard.storeValue("position4", letter)
+        gameBoard.threeInRowCheckX();
+        gameBoard.ThreeInRowCheckY();
+        gameBoard.tieCheck();
     }  
 })
 
@@ -105,8 +211,11 @@ block5.addEventListener("click", ()=> {
     XO.printXO();
     text = document.createElement("p")
     text.textContent = letter;
-    block5.appendChild(text)
-    gameBoard('position5', letter)
+    block5.appendChild(text) 
+    gameBoard.storeValue("position5", letter)
+    gameBoard.threeInRowCheckX();
+    gameBoard.ThreeInRowCheckY();
+    gameBoard.tieCheck();
     }
     
 })
@@ -117,7 +226,10 @@ block6.addEventListener("click", ()=> {
     text = document.createElement("p")
     text.textContent = letter;
     block6.appendChild(text)
-    gameBoard('position6', letter)
+    gameBoard.storeValue("position6", letter)
+    gameBoard.threeInRowCheckX();
+    gameBoard.ThreeInRowCheckY();
+    gameBoard.tieCheck();
     }
     
 })
@@ -128,7 +240,10 @@ block7.addEventListener("click", ()=> {
     text = document.createElement("p")
     text.textContent = letter;
     block7.appendChild(text)
-    gameBoard('position7', letter)
+    gameBoard.storeValue("position7", letter)
+    gameBoard.threeInRowCheckX();
+    gameBoard.ThreeInRowCheckY();
+    gameBoard.tieCheck();
     }
     
 })
@@ -139,7 +254,10 @@ block8.addEventListener("click", ()=> {
     text = document.createElement("p")
     text.textContent = letter;
     block8.appendChild(text)
-    gameBoard('position8', letter)
+    gameBoard.storeValue("position8", letter)
+    gameBoard.threeInRowCheckX();
+    gameBoard.ThreeInRowCheckY();
+    gameBoard.tieCheck();
     }
     
 })
@@ -150,7 +268,10 @@ block9.addEventListener("click", ()=> {
     text = document.createElement("p")
     text.textContent = letter;
     block9.appendChild(text)
-    gameBoard('position9', letter)
+    gameBoard.storeValue("position9", letter)
+    gameBoard.threeInRowCheckX();
+    gameBoard.ThreeInRowCheckY();
+    gameBoard.tieCheck();
     }  
 })
 
