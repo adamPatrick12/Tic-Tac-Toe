@@ -1,4 +1,4 @@
-block1 = document.querySelector(".gameBlock1")
+block1 = document.querySelector(".gameBlock1")          //selectors
 block2 = document.querySelector(".gameBlock2")
 block3 = document.querySelector(".gameBlock3")
 block4 = document.querySelector(".gameBlock4")
@@ -12,12 +12,16 @@ playerTurnX = document.querySelector(".playerTurnX")
 playerTurnO = document.querySelector(".playerTurnODull")
 winnerScreenX = document.querySelector(".winnerScreenX")
 winnerScreenO = document.querySelector(".winnerScreenO")
+tieScreen = document.querySelector(".tieScreen")
+restartBtn = document.querySelector(".restart")
 
+let programFinish = false       
 
 const gameBoard = (function (){     
 
     let winCheck = false;
-    let gameBoardFill = 0
+    let gameBoardFill = 0   // checking how many items on game board
+    
 
     //private object
     const _positions = {
@@ -42,91 +46,96 @@ const storeValue = (getPos, storeValue) =>{
     }
 }
 
+            // checking X positons for 3 in a row
     const threeInRowCheckX = () =>{
         if(_positions.position1 === "X" && _positions.position2 === "X" && _positions.position3 === "X"){
             winnerScreenX.style.display = "block";
             winCheck = true;
-            endProgram();
+            programFinish = true;
         }else if (_positions.position1 === "X" && _positions.position5 === "X" && _positions.position9 === "X"){
             winnerScreenX.style.display = "block"
             winCheck = true;
+            programFinish = true;
         }else if(_positions.position1 === "X" && _positions.position4 === "X" && _positions.position7 === "X"){
             winnerScreenX.style.display = "block"
             winCheck = true;
+            programFinish = true;
         }else if(_positions.position2 === "X" && _positions.position5 === "X" && _positions.position8 === "X"){
             winnerScreenX.style.display = "block"
             winCheck = true;
+            programFinish = true;
         }else if(_positions.position4 === "X" && _positions.position5 === "X" && _positions.position6 === "X"){
             winnerScreenX.style.display = "block"
             winCheck = true;
+            programFinish = true;
         }else if(_positions.position3 === "X" && _positions.position5 === "X" && _positions.position7 === "X"){
             winnerScreenX.style.display = "block"
             winCheck = true;
+            programFinish = true;
         }else if(_positions.position3 === "X" && _positions.position6 === "X" && _positions.position9 === "X"){
             winnerScreenX.style.display = "block"
             winCheck = true;
+            programFinish = true;
         }else if(_positions.position7 === "X" && _positions.position8 === "X" && _positions.position9 === "X"){
             winnerScreenX.style.display = "block"
             winCheck = true;
+            programFinish = true;
         }
     }
-
-    const ThreeInRowCheckY = () =>{
+        //checking Y positions for 3 in a row
+    const ThreeInRowCheckO = () =>{
         if(_positions.position1 === "O" && _positions.position2 === "O" && _positions.position3 === "O"){
             winnerScreenO.style.display = "block";
             winCheck = true;
+            programFinish = true;
         }else if (_positions.position1 === "O" && _positions.position5 === "O" && _positions.position9 === "O"){
             winnerScreenO.style.display = "block";
             winCheck = true;
+            programFinish = true;
         }else if(_positions.position1 === "O" && _positions.position4 === "O" && _positions.position7 === "O"){
             winnerScreenO.style.display = "block";
             winCheck = true;
+            programFinish = true;
         }else if(_positions.position2 === "O" && _positions.position5 === "O" && _positions.position8 === "O"){
             winnerScreenO.style.display = "block";
             winCheck = true;
+            programFinish = true;
         }else if(_positions.position4 === "O" && _positions.position5 === "O" && _positions.position6 === "O"){
             winnerScreenO.style.display = "block";
             winCheck = true;
+            programFinish = true;
         }else if(_positions.position3 === "O" && _positions.position5 === "O" && _positions.position7 === "O"){
             winnerScreenO.style.display = "block";
             winCheck = true;
+            programFinish = true;
         }else if(_positions.position3 === "O" && _positions.position6 === "O" && _positions.position9 === "O"){
             winnerScreenO.style.display = "block";
             winCheck = true;
+            programFinish = true;
         }else if(_positions.position7 === "O" && _positions.position8 === "O" && _positions.position9 === "O"){
             winnerScreenO.style.display = "block";
             winCheck = true;
+            programFinish = true;
         }
     }
 
     const tieCheck = () => {
-        if(gameBoardFill === 9 && winCheck === false){
-            console.log('Tie')
+        if(gameBoardFill === 9 && winCheck === false){          // check if gameboard is full, and no one has won
+            tieScreen.style.display = "block";
         }
     }
 
-    const endProgram = () => {
-    
-        document.addEventListener("click", handler, true);
-    
-        function handler(e) {
-          e.stopPropagation();
-          e.preventDefault();
-        }
-
-
-    }
-    
-    return {
+    // public functions
+    return {             
         storeValue,
         threeInRowCheckX,
-        ThreeInRowCheckY,
-        tieCheck
+        ThreeInRowCheckO,
+        tieCheck,
     }
 
 })()
 
-const XO = (function (){
+const XO = (function (){        //changing between 'X' and 'O'
    
     let num = 0
     
@@ -155,125 +164,129 @@ const XO = (function (){
 
 
 block1.addEventListener("click", ()=> {
-    if(block1.childElementCount === 0){
+    if(block1.childElementCount === 0 && programFinish === false){   //checking for user placement of 'X' or 'O' and program finish so they cannot place piece once game is over.
     XO.printXO();
     text = document.createElement("p")
-    text.textContent = letter;
+    text.textContent = letter;                      
     block1.appendChild(text)
-    gameBoard.storeValue("position1", letter)
+    gameBoard.storeValue("position1", letter)           //storing the position to private object.
     gameBoard.threeInRowCheckX();
-    gameBoard.ThreeInRowCheckY();
+    gameBoard.ThreeInRowCheckO();
     gameBoard.tieCheck();
     }
 })
 
 block2.addEventListener("click", ()=> {
-    if(block2.childElementCount === 0){
+    if(block2.childElementCount === 0 && programFinish === false){
     XO.printXO();
     text = document.createElement("p")
     text.textContent = letter;
     block2.appendChild(text)
     gameBoard.storeValue("position2", letter)
     gameBoard.threeInRowCheckX();
-    gameBoard.ThreeInRowCheckY();
+    gameBoard.ThreeInRowCheckO();
     gameBoard.tieCheck();
     }
 })
 
 block3.addEventListener("click", ()=> {
-    if(block3.childElementCount === 0){
+    if(block3.childElementCount === 0 && programFinish === false){
         XO.printXO();
         text = document.createElement("p")
         text.textContent = letter;
         block3.appendChild(text)
         gameBoard.storeValue("position3", letter)
         gameBoard.threeInRowCheckX();
-        gameBoard.ThreeInRowCheckY();
+        gameBoard.ThreeInRowCheckO();
         gameBoard.tieCheck();
     }
 })
 
 block4.addEventListener("click", ()=> {
-    if(block4.childElementCount === 0){
+    if(block4.childElementCount === 0 && programFinish === false){
         XO.printXO();
         text = document.createElement("p")
         text.textContent = letter;
         block4.appendChild(text) 
         gameBoard.storeValue("position4", letter)
         gameBoard.threeInRowCheckX();
-        gameBoard.ThreeInRowCheckY();
+        gameBoard.ThreeInRowCheckO();
         gameBoard.tieCheck();
     }  
 })
 
 block5.addEventListener("click", ()=> {
-    if(block5.childElementCount === 0){
+    if(block5.childElementCount === 0 && programFinish === false){
     XO.printXO();
     text = document.createElement("p")
     text.textContent = letter;
     block5.appendChild(text) 
     gameBoard.storeValue("position5", letter)
     gameBoard.threeInRowCheckX();
-    gameBoard.ThreeInRowCheckY();
+    gameBoard.ThreeInRowCheckO();
     gameBoard.tieCheck();
     }
     
 })
 
 block6.addEventListener("click", ()=> {
-    if(block6.childElementCount === 0){
+    if(block6.childElementCount === 0 && programFinish === false){
     XO.printXO();
     text = document.createElement("p")
     text.textContent = letter;
     block6.appendChild(text)
     gameBoard.storeValue("position6", letter)
     gameBoard.threeInRowCheckX();
-    gameBoard.ThreeInRowCheckY();
+    gameBoard.ThreeInRowCheckO();
     gameBoard.tieCheck();
     }
     
 })
 
 block7.addEventListener("click", ()=> {
-    if(block7.childElementCount === 0){
+    if(block7.childElementCount === 0 && programFinish === false){
     XO.printXO();
     text = document.createElement("p")
     text.textContent = letter;
     block7.appendChild(text)
     gameBoard.storeValue("position7", letter)
     gameBoard.threeInRowCheckX();
-    gameBoard.ThreeInRowCheckY();
+    gameBoard.ThreeInRowCheckO();
     gameBoard.tieCheck();
     }
     
 })
 
 block8.addEventListener("click", ()=> {
-    if(block8.childElementCount === 0){
+    if(block8.childElementCount === 0 && programFinish === false){
     XO.printXO();
     text = document.createElement("p")
     text.textContent = letter;
     block8.appendChild(text)
     gameBoard.storeValue("position8", letter)
     gameBoard.threeInRowCheckX();
-    gameBoard.ThreeInRowCheckY();
+    gameBoard.ThreeInRowCheckO();
     gameBoard.tieCheck();
     }
     
 })
 
 block9.addEventListener("click", ()=> {
-    if(block9.childElementCount === 0){
+    if(block9.childElementCount === 0 && programFinish === false){
     XO.printXO();
     text = document.createElement("p")
     text.textContent = letter;
     block9.appendChild(text)
     gameBoard.storeValue("position9", letter)
     gameBoard.threeInRowCheckX();
-    gameBoard.ThreeInRowCheckY();
+    gameBoard.ThreeInRowCheckO();
     gameBoard.tieCheck();
     }  
 })
+
+restartBtn.addEventListener("click", () =>{             //lazy restart game funcition (reloads pages onced clicked)
+    window.location.reload();
+});
 
 
 
